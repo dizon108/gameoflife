@@ -18,6 +18,8 @@ int generate() {
 	return rand() % 101;
 }
 
+int countNeighbors
+
 int main(int argc, const char * argv[]) {
     int rows;
     int columns;
@@ -55,8 +57,4 @@ int main(int argc, const char * argv[]) {
     }
 
     //New Generation
-    
-
-
-
 }
