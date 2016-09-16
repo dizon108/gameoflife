@@ -18,7 +18,7 @@ int generate() {
 	return rand() % 101;
 }
 
-//If neighbor is off grid, 
+//If neighbor is on grid and active, return 1. Otherwise return 0.
 int isActive(int x, int y, int row, int column, char grid[][]) {
 	if (x > 0 && x < row && y > 0 && y < column) {
 		if (grid[x][y] == 'x') {
