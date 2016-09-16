@@ -29,30 +29,34 @@ int main(int argc, const char * argv[]) {
     cin >> columns;
     cout << "Desnity: ";
     cin >> density;
+    density = round(density*100);
 
     char grid[rows][columns];
 
     srand (time(NULL));
 
-    cout << "Generated Random Numbers: " << '\n';
-    for (int i = 0; i < 5; i++) {
-    	int x = generate();
-    	cout << x;
-    	cout << '\n';
-    }
-
+    // Iniatlizes the grid representing the initial population density
     for (int i = 0; i < rows; i++) {
     	for (int j = 0; j < columns; j++) {
-    		grid[i][j] = 'x';
+    		if (generate() <= density) {
+    			grid[i][j] = 'x';
+    		} else {
+    			grid[i][j] = '-';
+    		}
     	}
     }
 
+    // Prints grid
     for (int i = 0; i < rows; i++) {
     	for (int j = 0; j < columns; j++) {
     		cout << grid[i][j];
     	}
     	cout << '\n';
     }
+
+    //New Generation
+    
+
 
 
 }
