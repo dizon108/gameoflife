@@ -7,9 +7,18 @@
 //
 
 #include <iostream>
+using namespace std;
+
+void gamePrompt(){
+    int rows;
+    int columns;
+    cout << "What dimensions would you like your world to be in?" << endl;
+    cout << "Rows: ";
+    cin >> rows ;
+    cout << "Columns: ";
+    cin >> columns;
+}
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
-    return 0;
+    gamePrompt();
 }
