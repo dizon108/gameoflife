@@ -18,7 +18,30 @@ int generate() {
 	return rand() % 101;
 }
 
-int countNeighbors
+//If neighbor is off grid, 
+int isActive(int x, int y, int row, int column, char grid[][]) {
+	if (x > 0 && x < row && y > 0 && y < column) {
+		if (grid[x][y] == 'x') {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+//Takes in a coordinate. Checks each neighbor. If active, adds to count. Returns count. 
+int countNeighbors(int x, int y, int row, int column, char grid[][]) {
+	int neighborCount = 0;
+	neighborCount += isActive(x--,y--, row, column, grid);
+	neighborCount += isActive(x--,y, row, column, grid);
+	neighborCount += isActive(x--,y++, row, column, grid);
+	neighborCount += isActive(x,y++, row, column, grid);
+	neighborCount += isActive(x++,y++, row, column, grid);
+	neighborCount += isActive(x++,y, row, column, grid);
+	neighborCount += isActive(x++,y--, row, column, grid);
+	neighborCount += isActive(x,y--, row, column, grid);
+	return neighborCount;
+}
+
 
 int main(int argc, const char * argv[]) {
     int rows;
@@ -57,4 +80,13 @@ int main(int argc, const char * argv[]) {
     }
 
     //New Generation
+    for (int i = 0; i < rows; i++) {
+    	for (int j = 0; j < columns; j++) {
+    		int x = 0;
+    		x = countNeighbors(i, j, rows, columns, grid) {
+    	}
+    	cout << '\n';
+    }
 }
+}
+
