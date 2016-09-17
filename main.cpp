@@ -18,7 +18,9 @@ int generate() {
 	return rand() % 101;
 }
 
-//If neighbor is on grid and active, return 1. Otherwise return 0.
+// These two methods would save lives for neighborCount operation, I'll leave them up for now.  
+/* 
+//If neighbor is on grid and active, returns 1. Otherwise, returns 0.
 int isActive(int x, int y, int row, int column, char grid[][]) {
 	if (x > 0 && x < row && y > 0 && y < column) {
 		if (grid[x][y] == 'x') {
@@ -41,7 +43,7 @@ int countNeighbors(int x, int y, int row, int column, char grid[][]) {
 	neighborCount += isActive(x,y--, row, column, grid);
 	return neighborCount;
 }
-
+*/
 
 int main(int argc, const char * argv[]) {
     int rows;
@@ -79,14 +81,60 @@ int main(int argc, const char * argv[]) {
     	cout << '\n';
     }
 
-    //New Generation
-    for (int i = 0; i < rows; i++) {
+    //Counts the neighbors of each Cell
+   for (int i = 0; i < rows; i++) {
     	for (int j = 0; j < columns; j++) {
-    		int x = 0;
-    		x = countNeighbors(i, j, rows, columns, grid) {
-    	}
-    	cout << '\n';
+    		int neighborCount = 0;
+    		int pseudoI = i; 
+    		int pseudoJ = j;
+    		if (pseudoI-1 >= 0 && pseudoI-1 < rows && pseudoJ-1 >= 0 && pseudoJ-1 < columns) {
+				if (grid[pseudoI-1][pseudoJ-1] == 'x') {
+					neighborCount++;
+				}
+			}
+			if (pseudoI-1 >= 0 &&pseudoI-1< rows && pseudoJ >= 0 && pseudoJ < columns) {
+				if (grid[pseudoI-1][pseudoJ] == 'x') {
+					neighborCount++;
+				}
+			}
+			if (pseudoI-1 >= 0 && pseudoI-1 < rows && pseudoJ+1 >= 0 && pseudoJ+1 < columns) {
+				if (grid[pseudoI-1][pseudoJ+1] == 'x') {
+					neighborCount++;
+				}
+			}
+			if (pseudoI >= 0 && pseudoI < rows && pseudoJ+1 >= 0 && pseudoJ+1 < columns) {
+				if (grid[pseudoI][pseudoJ+1] == 'x') {
+					neighborCount++;
+				}
+			}
+			if (pseudoI+1 >= 0 && pseudoI+1 < rows && pseudoJ+1 >= 0 && pseudoJ+1 < columns) {
+				if (grid[pseudoI+1][pseudoJ+1] == 'x') {
+					neighborCount++;
+				}
+			}
+			if (pseudoI+1 >= 0 && pseudoI+1 < rows && pseudoJ >= 0 && pseudoJ < columns) {
+				if (grid[pseudoI+1][pseudoJ] == 'x') {
+					neighborCount++;
+				}
+			}
+			if (pseudoI+1 >= 0 && pseudoI+1 < rows && pseudoJ-1 >= 0 && pseudoJ-1 < columns) {
+				if (grid[pseudoI+1][pseudoJ-1] == 'x') {
+					neighborCount++;
+				}
+			}
+			if (pseudoI >= 0 && pseudoI < rows && pseudoJ-1 >= 0 && pseudoJ-1 < columns) {
+				if (grid[pseudoI][pseudoJ-1] == 'x') {
+					neighborCount++;
+				}
+			}
+			//REESE: neighborCount here will equal the correct amount of 
+			//neighbors that the cell grid[i][j] has.
+			//If you want to test uncomment this line:
+			//cout << " " << neighborCount << " ";
+		}
+		cout << '\n';
     }
 }
-}
+
+
 
