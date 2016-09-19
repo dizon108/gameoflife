@@ -8,85 +8,69 @@
 
 #include "Grid.h"
 #include <iostream>
+#include <fstream>
 #include <random>
 #include <ctime>
 #include <math.h>
 
+
 using namespace std;
 
-int generate() {
-	return rand() % 101;
+void createGame() {
+    
+    cout << "Would you like to start with a random configuration (rc), or specify a flatfile configuration (ff). " << endl;
+    string answer;
+    cin >> answer;
+    if (answer == "rc") {
+        int rows;
+        int columns;
+        double density;
+        cout << "Enter deimensions:" << '\n';
+        cout << "Rows: ";
+        cin >> rows ;
+        cout << "Columns: ";
+        cin >> columns;
+        cout << "Density (enter a decimal value greater than 0 and less than or equal to 1): ";
+        cin >> density;
+        density = round(density*100);
+        Grid grid(rows, columns, density);
+    } else if (answer== "ff") {
+        ifstream input;
+        string filename;
+        cin >> filename;
+        input.open(filename.c_str());
+        
+        cout << "File opened" << '\n';
+    }
 }
-
-//If neighbor is on grid and active, return 1. Otherwise return 0.
-int isActive(int x, int y, int row, int column, char grid[][]) {
-	if (x > 0 && x < row && y > 0 && y < column) {
-		if (grid[x][y] == 'x') {
-			return 1;
-		}
-	}
-	return 0;
-}
-
-//Takes in a coordinate. Checks each neighbor. If active, adds to count. Returns count. 
-int countNeighbors(int x, int y, int row, int column, char grid[][]) {
-	int neighborCount = 0;
-	neighborCount += isActive(x--,y--, row, column, grid);
-	neighborCount += isActive(x--,y, row, column, grid);
-	neighborCount += isActive(x--,y++, row, column, grid);
-	neighborCount += isActive(x,y++, row, column, grid);
-	neighborCount += isActive(x++,y++, row, column, grid);
-	neighborCount += isActive(x++,y, row, column, grid);
-	neighborCount += isActive(x++,y--, row, column, grid);
-	neighborCount += isActive(x,y--, row, column, grid);
-	return neighborCount;
-}
-
-
 int main(int argc, const char * argv[]) {
-    int rows;
-    int columns;
-    double density;
-    cout << "What dimensions would you like your world to be in?" << endl;
-    cout << "Rows: ";
-    cin >> rows ;
-    cout << "Columns: ";
-    cin >> columns;
-    cout << "Desnity: ";
-    cin >> density;
-    density = round(density*100);
+    srand(time(NULL));
+    createGame();
+   /*
 
-    char grid[rows][columns];
-
-    srand (time(NULL));
-
-    // Iniatlizes the grid representing the initial population density
-    for (int i = 0; i < rows; i++) {
-    	for (int j = 0; j < columns; j++) {
-    		if (generate() <= density) {
-    			grid[i][j] = 'x';
-    		} else {
-    			grid[i][j] = '-';
-    		}
-    	}
-    }
-
-    // Prints grid
-    for (int i = 0; i < rows; i++) {
-    	for (int j = 0; j < columns; j++) {
-    		cout << grid[i][j];
-    	}
-    	cout << '\n';
-    }
-
-    //New Generation
-    for (int i = 0; i < rows; i++) {
-    	for (int j = 0; j < columns; j++) {
-    		int x = 0;
-    		x = countNeighbors(i, j, rows, columns, grid) {
-    	}
-    	cout << '\n';
-    }
+    //how to get to next generation
+    int proceed;
+    cout <<"How do you want to proceed to the next generation?" << endl;
+    cout << "1. Press 'enter'"<<endl;
+    cout << "2. Generate automatically"<<endl;
+    cout << "3. Output to file"<<endl;
+    cout << "Enter number: ";
+    cin >> proceed;
+   
+    //mode selection
+    int mode;
+    cout<<"Select a mode:"<<endl;
+    cout<<"1. Classic"<<endl;
+    cout<<"2. Doughnut"<<endl;
+    cout<<"3. Mirror"<<endl;
+    cout<<"Enter number: ";
+    cin >> mode;**/
+    
+   // x.run();
 }
-}
+
+
+
+
+
 
