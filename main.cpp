@@ -24,7 +24,7 @@ int generate() {
 int main(int argc, const char * argv[]) {
     Grid x;
    //prompt user
-    int rows;
+    /**int rows;
     int columns;
     double density;
     cout << "World Conditions: Enter a number" << endl;
@@ -52,11 +52,9 @@ int main(int argc, const char * argv[]) {
     cout<<"2. Doughnut"<<endl;
     cout<<"3. Mirror"<<endl;
     cout<<"Enter number: ";
-    cin >> mode;
+    cin >> mode;**/
     
-    x.createGrid(rows, columns);
-    x.gridAdd();
-    x.printGrid();
+    x.run();
     
     
     

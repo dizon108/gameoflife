@@ -57,13 +57,18 @@ void Grid::createGrid(int rows, int columns){
     for(int i = 0; i < rows; ++i){
         grid[i] = new char[columns];
     }
+    /**for(int i = 0; i< rows; ++i){
+        for(int j = 0; j < rows; ++j ){
+            grid[i][j] = '-';
+        }
+    }**/
 }
 
 //add to grid
 void Grid::gridAdd(){
-    srand (time(NULL));
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < columns; j++) {
+    srand(time(NULL));
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < columns; ++j) {
             if (generate() <= density) {
                 grid[i][j] = 'x';
             } else {
@@ -74,34 +79,202 @@ void Grid::gridAdd(){
     }
 }
 void Grid::printGrid(){
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < columns; j++) {
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < columns; ++j) {
             cout << grid[i][j];
         }
         cout << '\n';
     }
 }
-
-//create/update grid2
-//rules (changes will be made to grid2)
-void Grid::updateGrid2(int rows,int columns, int neighborCount){
-    if  (neighborCount <= 1 || neighborCount >= 4){
-        if (grid2[rows][columns] == 'x'){
-            grid2[rows][columns] = '-';
-        }
+void Grid::duplicateGrid(){
+    tempGrid = new char*[rows];
+    for(int i = 0; i < rows; ++i){
+        tempGrid[i] = new char[columns];
     }
-    if (neighborCount == 3){
-        if (grid2[rows][columns] == '-'){
-            grid2[rows][columns] = 'x';
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < columns; j++) {
+            tempGrid[i][j] = grid[i][j];
+            
         }
+        
+    }
+
+}
+int Grid::countNeighbors(){ //counts and created temp grid
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < columns; ++j) {
+            int neighborCount = 0;
+            int pseudoI = i;
+            int pseudoJ = j;
+            if (pseudoI-1 >= 0 && pseudoI-1 < rows && pseudoJ-1 >= 0 && pseudoJ-1 < columns) {
+                if (grid[pseudoI-1][pseudoJ-1] == 'x') {
+                    neighborCount++;
+                }
+            }
+            if (pseudoI-1 >= 0 &&pseudoI-1< rows && pseudoJ >= 0 && pseudoJ < columns) {
+                if (grid[pseudoI-1][pseudoJ] == 'x') {
+                    neighborCount++;
+                }
+            }
+            if (pseudoI-1 >= 0 && pseudoI-1 < rows && pseudoJ+1 >= 0 && pseudoJ+1 < columns) {
+                if (grid[pseudoI-1][pseudoJ+1] == 'x') {
+                    neighborCount++;
+                }
+            }
+            if (pseudoI >= 0 && pseudoI < rows && pseudoJ+1 >= 0 && pseudoJ+1 < columns) {
+                if (grid[pseudoI][pseudoJ+1] == 'x') {
+                    neighborCount++;
+                }
+            }
+            if (pseudoI+1 >= 0 && pseudoI+1 < rows && pseudoJ+1 >= 0 && pseudoJ+1 < columns) {
+                if (grid[pseudoI+1][pseudoJ+1] == 'x') {
+                    neighborCount++;
+                }
+            }
+            if (pseudoI+1 >= 0 && pseudoI+1 < rows && pseudoJ >= 0 && pseudoJ < columns) {
+                if (grid[pseudoI+1][pseudoJ] == 'x') {
+                    neighborCount++;
+                }
+            }
+            if (pseudoI+1 >= 0 && pseudoI+1 < rows && pseudoJ-1 >= 0 && pseudoJ-1 < columns) {
+                if (grid[pseudoI+1][pseudoJ-1] == 'x') {
+                    neighborCount++;
+                }
+            }
+            if (pseudoI >= 0 && pseudoI < rows && pseudoJ-1 >= 0 && pseudoJ-1 < columns) {
+                if (grid[pseudoI][pseudoJ-1] == 'x') {
+                    neighborCount++;
+                }
+            }
+            //REESE: neighborCount here will equal the correct amount of
+            //neighbors that the cell grid[i][j] has.
+            //If you want to test uncomment this line:
+            //cout << " " << neighborCount << " ";
+            
+            //creates temporary grid
+            if  (neighborCount <= 1 ){
+                if (grid[i][j] == 'x'){
+                    tempGrid[i][j] = '-';
+                }
+                else if (grid[i][j] == '-'){
+                    tempGrid[i][j] = '-';
+                }
+            }
+            if (neighborCount == 2){
+                if (grid[i][j] == '-'){
+                    tempGrid[i][j] = '-';
+                }
+                else if (grid[i][j] == 'x'){
+                    tempGrid[i][j] = 'x';
+                }
+            }
+            if (neighborCount == 3){
+                if (grid[i][j] == '-'){
+                    tempGrid[i][j] = 'x';
+                }
+                else if (grid[i][j] == 'x'){
+                    tempGrid[i][j] = 'x';
+                }
+            }
+            if  (neighborCount >= 4){
+                if (grid[i][j] == 'x'){
+                    tempGrid[i][j] = '-';
+                }
+                else if (grid[i][j] == '-'){
+                    tempGrid[i][j] = '-';
+                }
+            }
+            //for testing purposes. uncomment to see temporary grid
+            //cout << tempGrid[i][j];
+        }
+        
+    }return neighborCount;
+}
+/**void Grid::tempGridAdd(int rows, int columns, int neighborCount){
+            if  (neighborCount <= 1 ){
+                if (grid[rows][columns] == 'x'){
+                    tempGrid[rows][columns] = '-';
+                }
+                else if (grid[rows][columns] == '-'){
+                    tempGrid[rows][columns] = '-';
+                }
+            }
+            if (neighborCount == 2){
+                if (grid[rows][columns] == '-'){
+                    tempGrid[rows][columns] = '-';
+                }
+                else if (grid[rows][columns] == 'x'){
+                    tempGrid[rows][columns] = 'x';
+                }
+            }
+            if (neighborCount == 3){
+                if (grid[rows][columns] == '-'){
+                    tempGrid[rows][columns] = 'x';
+                }
+                else if (grid[rows][columns] == 'x'){
+                    tempGrid[rows][columns] = 'x';
+                }
+            }
+            if  (neighborCount >= 4){
+                if (grid[rows][columns] == 'x'){
+                    tempGrid[rows][columns] = '-';
+                }
+                else if (grid[rows][columns] == '-'){
+                    tempGrid[rows][columns] = '-';
+                }
+            }
+            //for testing purposes. uncomment to see temporary grid
+            //cout << tempGrid[i][j];
+}**/
+
+
+void Grid:: copyTemp(){
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < columns; j++) {
+            grid[i][j] = tempGrid[i][j];
+            
+        }
+        
     }
 }
 
-//copy grid2 to grid
-void Grid::copyGrid(){
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < columns; j++) {
-            grid[i][j] = grid2[i][j];
-        }
-    }
+void Grid::run(){
+    cout << "World Conditions: Enter a number" << endl;
+    cout << "Rows: ";
+    cin >> rows ;
+    cout << "Columns: ";
+    cin >> columns;
+    cout << "Density (enter a decimal value greater than 0 and less than 1): ";
+    cin >> density;
+    density = round(density*100);
+    
+    //how to get to next generation
+   /** int proceed;
+    cout <<"How do you want to proceed to the next generation?" << endl;
+    cout << "1. Press 'enter'"<<endl;
+    cout << "2. Generate automatically"<<endl;
+    cout << "3. Output to file"<<endl;
+    cout << "Enter number: ";
+    cin >> proceed;
+    
+    //mode selection
+    int mode;
+    cout<<"Select a mode:"<<endl;
+    cout<<"1. Classic"<<endl;
+    cout<<"2. Doughnut"<<endl;
+    cout<<"3. Mirror"<<endl;
+    cout<<"Enter number: ";
+    cin >> mode;**/
+    
+    createGrid(rows,columns);
+    gridAdd();
+    printGrid();
+    duplicateGrid();
+    countNeighbors();
+    //tempGridAdd();
+    copyTemp();
+    cout<<"new gen: "<<endl;
+    printGrid();
+    
+    
 }

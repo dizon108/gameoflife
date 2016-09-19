@@ -14,17 +14,21 @@ public:
     ~Grid();
     int rows;
     int columns;
-    void copyGrid();
-    void updateGrid2(int rows,int columns, int neighborCount);
   //  int countNeighbors(int x, int y, int row, int column, char grid[][]);
   //  int isActive(int x, int y, int row, int column, char grid[][]);
     char **grid;
-    char **grid2;
+    char **tempGrid;
     int generate();
-    int density;
+    double density;
     void createGrid(int rows, int columns);
     void printGrid();
     void gridAdd();
+    void run();
+    int countNeighbors();
+    int neighborCount;
+    void tempGridAdd(int rows, int columns, int neighborCount);
+    void copyTemp();
+    void duplicateGrid();
 };
 
 
