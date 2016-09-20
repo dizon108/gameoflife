@@ -186,6 +186,7 @@ void Grid::updateNeighbors(){
     for(int i = 0; i < rows; ++i){
         if(grid[i][0] || grid[i][rows-1]){
             //do stuff
+            //+= countNeighbors() ?? this'll depend on what your doughnut/mirror method returns
         }else{
             countNeighbors();
         }
@@ -193,6 +194,7 @@ void Grid::updateNeighbors(){
     for(int i = 0; i < columns; ++i){
         if(grid[0][i] || grid[columns-1][i]){
             //do stuff
+            //+= countNeighbors() ?? this'll depend on what your doughnut/mirror method returns
         }else{
             countNeighbors();
         }
