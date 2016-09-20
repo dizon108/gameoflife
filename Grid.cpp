@@ -8,6 +8,8 @@
 
 #include <stdio.h>
 #include "Grid.h"
+#include <thread>
+#include <chrono>
 
 #include <iostream>
 #include <random>
@@ -65,6 +67,7 @@ void Grid::printGrid(){ //prints the grid
         }
         cout << '\n';
     }
+    cout << '\n';
 }
 void Grid::createTempGrid(){ //creates memory allocation for temporary grid
     tempGrid = new char*[rows];
@@ -202,7 +205,7 @@ void Grid::updateNeighbors(){
 }
 
 void Grid::gameOfLife(){
-   /** cout << "World Conditions: Enter a number" << endl;
+    cout << "World Conditions: Enter a number" << endl;
     cout << "Rows: ";
     cin >> rows ;
     cout << "Columns: ";
@@ -225,28 +228,35 @@ void Grid::gameOfLife(){
     cout<<"2. Doughnut"<<endl;
     cout<<"3. Mirror"<<endl;
     cout<<"Enter number: ";
-    cin >> mode;**/
+    cin >> mode;
     
     createGrid();
     gridAdd(density);
+    int generation = 0;
+    cout << "Generation: " + to_string(generation)<< endl;
     printGrid();
     createTempGrid();
-    bool switchs = true;
-    while(switchs){
-        if (proceed == 1){
-        cin.ignore();
-        }else{
-            countNeighbors();
-            if (!isEqual()) {
-                copyTemp();
-                cout<<"new gen: "<<endl;
+    generation = 1;
+    while(true){
+        countNeighbors();
+        if (!isEqual()) {
+            copyTemp();
+            if (proceed == 1){
+                cin.ignore();
+                cout<<"Generation " + to_string(generation)<<endl;
                 printGrid();
-            } else {
-                switchs = false;
             }
+            else if(proceed == 2){
+                this_thread::sleep_for(chrono::seconds(1));
+                cout<<"Generation: " + to_string(generation)<<endl;
+                printGrid();
+            }
+            generation++;
+        } else {
+            cout << "Done. Press enter to exit the program." <<endl;
+            cin.ignore();
+            break;
         }
     }
-    cout << "Done. Press enter to exit the program." <<endl;
-    cin.ignore();
     
 }
