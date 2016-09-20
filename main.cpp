@@ -41,7 +41,7 @@ void createGame() {
     }**/
 }
 int main(int argc, const char * argv[]) {
-    createGame();
+    //createGame();
     /** //how to get to next generation
      int proceed;
      cout <<"How do you want to proceed to the next generation?" << endl;
@@ -59,8 +59,8 @@ int main(int argc, const char * argv[]) {
      cout<<"3. Mirror"<<endl;
      cout<<"Enter number: ";
      cin >> mode;**/
-    //Grid x;
-    // x.gameOfLife();
+     Grid x;
+     x.gameOfLife();
 }
 
 
