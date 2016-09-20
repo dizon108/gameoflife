@@ -19,6 +19,7 @@ public:
     int mode;
     int neighborCount;
     int generate();
+    int end;
     double density;
     char **grid;
     char **tempGrid;
