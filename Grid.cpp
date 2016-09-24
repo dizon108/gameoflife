@@ -12,12 +12,9 @@
 #include <chrono>
 
 #include <iostream>
-#include <fstream>
 #include <random>
 #include <ctime>
 #include <math.h>
-#include <cstdlib>
-#include <limits>
 
 using namespace std;
 
@@ -28,19 +25,12 @@ Grid::Grid(){
 Grid::~Grid(){
     
 }
-Grid::Grid(int r, int col, double d, int m, int p) {
+Grid::Grid(int r, int col, int density) {
     rows = r;
     columns = col;
-    density = d;
-    mode = m;
-    proceed = p;
     createGrid();
     gridAdd(density);
-}
-Grid::Grid(string fileName, int m, int p){
-    createGrid2(fileName);
-    mode = m;
-    proceed = p;
+    printGrid();
 }
 
 int Grid:: generate() {
@@ -51,28 +41,40 @@ int Grid:: generate() {
 //create grid
 void Grid::createGrid(){
     grid = new char*[rows];
+    //CREATES ARRAY TO HOLD REFLECTION/DONUT NEIGHBORS FOR TOP&BOT OF GRID
+    topBot = new int*[2];
+    cout << '\n';
+    topBot[0] = new int[columns];
+    topBot[1] = new int[columns];
+    for (int i = 0; i < 2; i++) {
+    	for (int j = 0; j < columns; j++) {
+    		topBot[i][j] = 0;
+    		cout << topBot[i][j];
+    	}
+    	cout << '\n';
+    }
+    //CREATES ARRAY TO HOLD REFLECTION/DONUT NEIGHBORS FOR SIDES OF GRID
+    sides = new int*[columns];
+    for (int i = 0; i < columns; i++) {
+    	sides[i] = new int[2];
+    }
+    for (int i = 0; i < columns; i++) {
+    	for (int j = 0; j < 2; j++) {
+    		sides[i][j] = 0;
+    		cout << sides[i][j];
+    	}
+    	cout << '\n';
+    }
+
+
     for(int i = 0; i < rows; ++i){
         grid[i] = new char[columns];
     }
 }
 
-void Grid::createGrid2(string fileName){
-    ifstream gameFile(fileName);
-    getline(gameFile, line);
-    rows = stoi(line); //stoi converts string to int
-    getline(gameFile,line);
-    columns = stoi(line);
-    createGrid();
-    for (int i = 0; i < rows; ++i){
-        if(gameFile >> line){
-            for(int j = 0; j < columns; ++j){
-                grid[i][j] = line[j];
-            }
-        }else break;
-    }
-}
 //add to grid
-void Grid::gridAdd(double density){
+void Grid::gridAdd(int density){
+    srand(time(NULL));
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < columns; ++j) {
             if (generate() <= density) {
@@ -84,7 +86,6 @@ void Grid::gridAdd(double density){
         
     }
 }
-
 void Grid::printGrid(){ //prints the grid
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < columns; ++j) {
@@ -152,7 +153,126 @@ void Grid::countNeighbors(){ //counts and creates temp grid
         
     }
 }
-void Grid::tempGridAdd(int rows, int columns, int neighborCount){ //updates grid after counting neighbors
+
+void Grid::updateTopBot(int currentRow, int tB) {
+	if (grid[currentRow][0] == 'x') {
+		topBot[tB][0]++;
+		topBot[tB][1]++;
+	}
+	for (int i = 1; i < columns-1; i++) {
+		int temp = i;
+		if (grid[currentRow][i] == 'x') {
+			topBot[tB][temp-1]++;
+			topBot[tB][i]++;
+			topBot[tB][temp+1]++;
+		}
+	}
+	if (grid[currentRow][columns-1] == 'x') {
+		topBot[tB][columns-1]++;
+		topBot[tB][columns-2]++;
+	}
+}
+
+void Grid::updateSides(int currentCol, int lR) {
+	if (grid[0][currentCol] == 'x') {
+		sides[0][lR]++;
+		sides[1][lR]++;
+	}
+	for (int i = 1; i < rows-1; i++) {
+		int temp = i;
+		if (grid[i][currentCol] == 'x') {
+			sides[temp-1][lR]++;
+			sides[i][lR]++;
+			sides[temp+1][lR]++;
+		}
+	}
+	if (grid[rows-1][currentCol] == 'x') {
+		sides[rows-1][lR]++;
+		sides[rows-2][lR]++;
+	}
+}
+
+void Grid::updateCornersMirror() {
+	if(grid[0][0] == 'x') {
+		topBot[0][0]+=2;
+		sides[0][0]+=2;
+	}
+	if(grid[0][columns-1] == 'x'){
+		topBot[0][columns-1]+=2;
+		sides[0][1] += 2;
+	}
+	if(grid[rows-1][0] == 'x') {
+		topBot[1][0]+=2;
+		sides[rows-1][0]+=2;
+	}
+	if(grid[rows-1][columns-1] == 'x') {
+		topBot[1][columns-1]+=2;
+		sides[rows-1][columns-1]+=2;
+	}
+	sides[0][0] += (topBot[0][0]%3);
+	sides[0][1] += (topBot[0][columns-1]%3);
+	sides[rows-1][0] += (topBot[1][0]%3);
+	sides[rows-1][1] += (topBot[1][columns-1]%3);
+	topBot[0][0] = sides[0][0];
+	topBot[0][columns-1] = sides[0][1];
+	topBot[1][0] = sides[rows-1][0];
+	topBot[1][columns-1] = sides[rows-1][1];	
+}
+
+void Grid::updateCornersDonut() {
+	if(grid[0][0] == 'x') {
+		topBot[1][columns-1]++;
+	}
+	if(grid[0][columns-1] == 'x'){
+		topBot[1][0]++;
+	}
+	if(grid[rows-1][0] == 'x') {
+		topBot[0][columns-1]++;
+	}
+	if(grid[rows-1][0] == 'x') {
+		topBot[0][0]++;
+	}
+	topBot[0][0] += sides[0][0];
+	topBot[0][columns-1] += sides[0][1];
+	topBot[1][0] += sides[rows-1][0];
+	topBot[1][columns-1] += sides[rows-1][1];
+	sides[0][0] = topBot[0][0];
+	sides[0][1] = topBot[0][columns-1];
+	sides[rows-1][0] = topBot[1][0];
+	sides[rows-1][1] = topBot[1][columns-1];
+}
+
+// Prints the current "reflection" neighbors of the edge cells.
+void Grid::printEdges(){
+	for (int i = 0; i < 2; i++) {
+       	for (int j = 0; j < columns; j++) {
+            cout << topBot[i][j];
+        }
+        cout << '\n';
+    }
+    cout << '\n';
+    for (int i = 0; i < rows; i++) {
+       	for (int j = 0; j < 2; j++) {
+            cout << sides[i][j];
+        }
+        cout << '\n';
+    }
+}
+
+void Grid::clearEdges() {
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < columns; j++) {
+			topBot[i][j] = 0;
+		}
+	}
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < 2; j++) {
+			sides[i][j] = 0;
+		}
+	}
+}
+
+void Grid::tempGridAdd(int rows, int columns, int neighborCount){
             if  (neighborCount <= 1 ){
                 if (grid[rows][columns] == 'x'){
                     tempGrid[rows][columns] = '-';
@@ -212,6 +332,9 @@ bool Grid::isEqual(){
 //if edge cell
 void Grid::updateNeighbors(){
     for(int i = 0; i < rows; ++i){
+    	if (i == 0) {
+
+    	}
         if(grid[i][0] || grid[i][rows-1]){
             //do stuff
             //+= countNeighbors() ?? this'll depend on what your doughnut/mirror method returns
@@ -229,7 +352,95 @@ void Grid::updateNeighbors(){
     }
 }
 
-
-
+void Grid::gameOfLife(){
+    cout << "World Conditions: Enter a number" << endl;
+    cout << "Rows: ";
+    cin >> rows ;
+    cout << "Columns: ";
+    cin >> columns;
+    cout << "Density (enter a decimal value greater than 0 and less than 1): ";
+    cin >> density;
+    density = round(density*100);
     
+    //how to get to next generation
+    cout <<"How do you want to proceed to the next generation?" << endl;
+    cout << "1. Press 'enter'"<<endl;
+    cout << "2. Generate automatically"<<endl;
+    cout << "3. Output to file"<<endl;
+    cout << "Enter number: ";
+    cin >> proceed;
+    
+    //mode selection
+    cout<<"Select a mode:"<<endl;
+    cout<<"1. Classic"<<endl;
+    cout<<"2. Doughnut"<<endl;
+    cout<<"3. Mirror"<<endl;
+    cout<<"Enter number: ";
+    cin >> mode;
+    
+    createGrid();
+    gridAdd(density);
+    int generation = 0;
+    cout << "Generation: " + to_string(generation)<< endl;
+    printGrid();
+    createTempGrid();
+    generation = 1;
+    while(true){
+        countNeighbors();
+        if (!isEqual()) {
+            copyTemp();
+            if (proceed == 1){
+                cin.ignore();
+                cout<<"Generation " + to_string(generation)<<endl;
+                printGrid();
+                /*updateTopBot(0,0);
+            	updateTopBot(rows-1, 1);
+            	updateSides(0,0);
+            	updateSides(columns-1, 1);
+            	updateCornersMirror();
+            	printEdges();
+            	clearEdges();
+            	*/
+              	updateTopBot(rows-1,0);
+            	updateTopBot(0, 1);
+            	updateSides(columns-1,0);
+            	updateSides(0, 1);
+            	updateCornersDonut();
+            	printEdges();
+            	clearEdges();
+            	
+                /*updateTopBotMirror(0,0);
+            	updateTopBotMirror(rows-1, 1);
+            	updateSidesMirror(0,0);
+            	updateSidesMirror(columns-1, 1);
+            	int topLeft = (topBot[0][0]%3);
+				int topRight = (topBot[0][columns-1]%3);
+				int botLeft = (topBot[1][0]%3);
+				int botRight = (topBot[1][columns-1]%3);
+	
+				sides[0][0] += topLeft;
+				sides[0][1] += topRight;
+				sides[rows-1][0] += botLeft;
+				sides[rows-1][1] += botRight;
 
+				topBot[0][0] = sides[0][0];
+				topBot[0][columns-1] = sides[0][1];
+				topBot[1][0] = sides[rows-1][0];
+				topBot[1][columns-1] = sides[rows-1][1];
+            	printMirror();
+            	clearMirror();
+            	*/
+            }
+            else if(proceed == 2){
+                this_thread::sleep_for(chrono::seconds(1));
+                cout<<"Generation: " + to_string(generation)<<endl;
+                printGrid();
+            }
+            generation++;
+        } else {
+            cout << "Done. Press enter to exit the program." <<endl;
+            cin.ignore();
+            break;
+        }
+    }
+}

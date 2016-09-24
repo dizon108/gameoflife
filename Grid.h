@@ -8,17 +8,10 @@
 
 #ifndef Grid_h
 #define Grid_h
-#include <string>
-#include <iostream>
-#include <fstream>
-
-using namespace std;
-
 class Grid{
 public:
     Grid();
-    Grid(int r, int col, double d, int p, int m);
-    Grid(string fileName, int m, int p);
+    Grid(int r, int col, int d);
     ~Grid();
     int rows;
     int columns;
@@ -27,16 +20,25 @@ public:
     int neighborCount;
     int generate();
     int end;
-    int input;
     double density;
     char **grid;
     char **tempGrid;
-    string line;
+    int **topBot;
+    int **sides;
+
+    //Update Functions for Mirror Mode
+    void updateTopBot(int currentRow, int tB);
+    void updateSides(int currentCol, int lR);
+    void updateCornersDonut();
+    void updateCornersMirror();
+    void clearEdges();
+    void printEdges();
+
     bool isEqual();
     void createGrid();
-    void createGrid2(string fileName);
     void printGrid();
-    void gridAdd(double density);
+    void gridAdd(int density);
+    void gameOfLife();
     void countNeighbors();
     void updateNeighbors();
     void tempGridAdd(int rows, int columns, int neighborCount);
